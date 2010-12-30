@@ -1,9 +1,7 @@
 import Levenshtein
-import sys
 from nltk.corpus import wordnet
 import RapleafInterest
 import string
-import time
 
 class RapMatcher:
 	def __init__(self, dirname):
