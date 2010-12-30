@@ -37,8 +37,8 @@ class RapMatcher:
 		and are within an edit distance of 1 from each other
 		"""
 		return ((len(word1) >= 5) and 
-						(len(word2) >= 5) and 
-						(1 == Levenshtein.distance(word1, word2)))
+		(len(word2) >= 5) and 
+		(1 == Levenshtein.distance(word1, word2)))
 	
 	def __wordnet_match(self, word1, word2):
 		"""
@@ -67,7 +67,7 @@ class RapMatcher:
 			for word in interest.get_words():
 				word = word.upper()
 				if ((self.__equality_match(query, word)) or 
-						(self.__levenshtein_match(query, word)) or 
-						(self.__wordnet_match(query, word))):
+				(self.__levenshtein_match(query, word)) or 
+				(self.__wordnet_match(query, word))):
 					self.matches.add(interest.get_name())
 		return self.matches
