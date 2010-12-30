@@ -53,6 +53,8 @@ class RapMatcher:
 			return False
 		for syn1 in synset1:
 			for syn2 in synset2:
+				syn1 = syn1.upper()
+				syn2 = syn2.upper()
 				if self.__equality_match(syn1, syn2):
 					return True
 				elif 1 == self.__levenshtein_match(syn1, syn2):
