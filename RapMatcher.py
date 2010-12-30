@@ -6,8 +6,8 @@ import string
 class RapMatcher:
 	def __init__(self, dirname):
 		""" 
-		Takes the directory name of the interest and log files and creates a list of 
-		Rapleaf interest objects, a log to record match info, and a match list
+		Takes the directory name of the interest file and creates 
+		a list of Rapleaf interest objects and match set
 		"""
 		fname = dirname + '/interests.txt'
 		f = open(fname, 'r')
