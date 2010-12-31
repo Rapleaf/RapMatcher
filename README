@@ -12,4 +12,11 @@ Copyright 2010 Gareth G. Aye
    See the License for the specific language governing permissions and
    limitations under the License.
 
-The RapMatcher.py file provides a tag to Rapleaf interest matcher for use with Rapleaf's Personalization API. Make sure to download and install each of "Levenshtein", "PyYAML", and "nltk", Python's natural language toolkit, from easy_install or at http://pypi.python.org/pypi/python-Levenshtein/, http://pyyaml.org/wiki/PyYAML, and http://www.nltk.org/, respectively. An example script which takes an interest as a command line parameter and sends the matched Rapleaf interests to std out is available in Test.py.
+The RapMatcher.py file provides a tag to Rapleaf interest matcher 
+for use with Rapleaf's Personalization API. Make sure to download
+and install each of "Levenshtein", "PyYAML", and "nltk", 
+Python's natural language toolkit, from easy_install or 
+at http://pypi.python.org/pypi/python-Levenshtein/, 
+http://pyyaml.org/wiki/PyYAML, and http://www.nltk.org/, respectively.
+An example script which takes a tag as a command line parameter
+and sends the matched Rapleaf interests to std out is available in Test.py.
