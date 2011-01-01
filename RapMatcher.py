@@ -30,6 +30,10 @@ class RapMatcher:
 		return word1 == word2
 		
 	def __substring_match(self, word1, word2):
+		"""
+		Tests whether either word has length greater than 3
+		and is a substring of the other word
+		"""
 		return (((len(word1) > 3) and (word1 in word2)) or
 		((len(word2) > 3) and (word2 in word1)))
 		
