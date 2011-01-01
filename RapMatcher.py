@@ -27,8 +27,12 @@ class RapMatcher:
 		"""
 		Tests whether or not word1 is equal to word2
 		"""
-		return (word1 == word2)
-	
+		return word1 == word2
+		
+	def __substring_match(self, word1, word2):
+		return (((len(word1) > 3) and (word1 in word2)) or
+		((len(word2) > 3) and (word2 in word1)))
+		
 	def __levenshtein_match(self, word1, word2):
 		"""
 		Tests whether word1 and word2 both have length >= 5
@@ -66,7 +70,8 @@ class RapMatcher:
 		for interest in self.interests:
 			for word in interest.get_words():
 				word = word.upper()
-				if ((self.__equality_match(query, word)) or 
+				if ((self.__equality_match(query, word)) or
+				(self.__substring_match(query, word)) or
 				(self.__levenshtein_match(query, word)) or 
 				(self.__wordnet_match(query, word))):
 					self.matches.add(interest.get_name())
