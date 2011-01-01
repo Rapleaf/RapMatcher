@@ -55,7 +55,7 @@ class RapMatcher:
 				syn2 = syn2.upper()
 				if self.__equality_match(syn1, syn2):
 					return True
-				elif 1 == self.__levenshtein_match(syn1, syn2):
+				if self.__levenshtein_match(syn1, syn2):
 					return True
 		return False
 		
