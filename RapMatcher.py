@@ -66,17 +66,18 @@ class RapMatcher:
 				if self.__levenshtein_match(syn1, syn2):
 					return True
 		return False
-		
+	
 	def match(self, query):
 		""" Matches a query with a Rapleaf interest """
 		self.matches.clear()
-		query = query.upper()
-		for interest in self.interests:
-			for word in interest.get_words():
-				word = word.upper()
-				if ((self.__equality_match(query, word)) or
-				(self.__substring_match(query, word)) or
-				(self.__levenshtein_match(query, word)) or 
-				(self.__wordnet_match(query, word))):
-					self.matches.add(interest.get_name())
+		query = RapleafInterest.RapleafInterest(query.rstrip())
+		for query_word in query.get_words():
+			for interest in self.interests:
+				for interest_word in interest.get_words():
+					interest_word = interest_word.upper()
+					if ((self.__equality_match(query_word, interest_word)) or
+					(self.__substring_match(query_word, interest_word)) or
+					(self.__levenshtein_match(query_word, interest_word)) or 
+					(self.__wordnet_match(query_word, interest_word))):
+						self.matches.add(interest.get_name())
 		return self.matches
