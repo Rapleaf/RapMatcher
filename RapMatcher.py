@@ -72,6 +72,7 @@ class RapMatcher:
 		self.matches.clear()
 		query = RapleafInterest.RapleafInterest(query.rstrip())
 		for query_word in query.get_words():
+			query_word = query_word.upper()
 			for interest in self.interests:
 				for interest_word in interest.get_words():
 					interest_word = interest_word.upper()
