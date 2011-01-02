@@ -4,6 +4,9 @@ import RapleafInterest
 import string
 
 class RapMatcher:
+	minSubstring = 5			# Minimum length of a substring in substring match
+	minLevenshtein = 5		# Minimum length of each pair member in Levenshtein match
+	
 	def __init__(self, dirname):
 		""" 
 		Takes the directory name of the interest file and creates 
@@ -34,16 +37,16 @@ class RapMatcher:
 		Tests whether either word has length greater than 3
 		and is a substring of the other word
 		"""
-		return (((len(word1) > 3) and (word1 in word2)) or
-		((len(word2) > 3) and (word2 in word1)))
+		return (((len(word1) >= RapMatcher.minSubstring) and (word1 in word2)) or
+		((len(word2) > RapMatcher.minSubstring) and (word2 in word1)))
 		
 	def __levenshtein_match(self, word1, word2):
 		"""
 		Tests whether word1 and word2 both have length >= 5
 		and are within an edit distance of 1 from each other
 		"""
-		return ((len(word1) >= 5) and 
-		(len(word2) >= 5) and 
+		return ((len(word1) >= RapMatcher.minLevenshtein) and 
+		(len(word2) >= RapMatcher.minLevenshtein) and 
 		(1 == Levenshtein.distance(word1, word2)))
 	
 	def __wordnet_match(self, word1, word2):
