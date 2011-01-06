@@ -4,18 +4,21 @@ import RapleafInterest
 import string
 
 class RapMatcher:
-	minSubstring = 5			# Minimum length of a substring in substring match
-	minLevenshtein = 5		# Minimum length of each pair member in Levenshtein match
+	"""
+	This class' constructor takes a list of interests and is called via
+	the match function. The match function is passed a tag and returns a dictionary
+	which maps a subset of the interests onto scores which indicate how likely it is
+	that their respective key matches the tag.
+	"""
+	equalScore = 15					# Weight attributed to equality
 	
-	def __init__(self, dirname):
+	def __init__(self, interests):
 		""" 
-		Takes the directory name of the interest file and creates 
-		a list of Rapleaf interest objects and match set
+		Takes a list of string interests and creates a list of 
+		RapleafInterest objects in addition to an empty set of matches 
 		"""
-		fname = dirname + '/interests.txt'
-		f = open(fname, 'r')
-		self.interests = map(RapleafInterest.RapleafInterest, map(string.rstrip, f.readlines()))
-		self.matches = set()
+		self.interests = map(RapleafInterest.RapleafInterest, map(string.rstrip, interests))
+		self.scores = {}
 		
 	def __get_synset(self, word):
 		"""
@@ -28,60 +31,68 @@ class RapMatcher:
 	
 	def __equality_match(self, word1, word2):
 		"""
-		Tests whether or not word1 is equal to word2
+		Returns equalScore if word1 is word2
 		"""
-		return word1 == word2
+		if word1 == word2:
+			return RapMatcher.equalScore
+		return 0
 		
 	def __substring_match(self, word1, word2):
 		"""
-		Tests whether either word has length greater than 3
-		and is a substring of the other word
+		If one word is a substring of the other, returns the length of that word
 		"""
-		return (((len(word1) >= RapMatcher.minSubstring) and (word1 in word2)) or
-		((len(word2) > RapMatcher.minSubstring) and (word2 in word1)))
-		
+		if (word1 in word2):
+			return len(word1)
+		elif (word2 in word1):
+			return len(word2)
+		return 0
+							
 	def __levenshtein_match(self, word1, word2):
 		"""
-		Tests whether word1 and word2 both have length >= 5
-		and are within an edit distance of 1 from each other
+		If two words are within an edit distance of 1 from each other
+		returns the length of the shorter of the two
 		"""
-		return ((len(word1) >= RapMatcher.minLevenshtein) and 
-		(len(word2) >= RapMatcher.minLevenshtein) and 
-		(1 == Levenshtein.distance(word1, word2)))
+		if (1 == Levenshtein.distance(word1, word2)):
+			return min(len(word1), len(word2))
+	 	return 0
 	
 	def __wordnet_match(self, word1, word2):
 		"""
-		Tests whether there exists a short WordNet path 
-		from the word1 to word2, extends via Levenshtein
+		Performs a variety of tests on mutual WordNet neighbors and returns
+		an overall WordNet score to indicate the closeness of word1 and word2
 		"""
 		synset1 = self.__get_synset(word1)
 		if not synset1:
-			return False
+			return 0
 		synset2 = self.__get_synset(word2)
 		if not synset2:
-			return False
+			return 0
+		wn_score = 0
 		for syn1 in synset1:
 			syn1 = syn1.upper()
 			for syn2 in synset2:
 				syn2 = syn2.upper()
-				if self.__equality_match(syn1, syn2):
-					return True
-				if self.__levenshtein_match(syn1, syn2):
-					return True
-		return False
+				wn_score += (self.__equality_match(syn1, syn2))/2
+				wn_score += (self.__substring_match(syn1, syn2))/2
+				wn_score += (self.__levenshtein_match(syn1, syn2))/2
+		return wn_score
 	
 	def match(self, query):
-		""" Matches a query with a Rapleaf interest """
-		self.matches.clear()
+		""" 
+		Matches a query with a Rapleaf interest 
+		"""
+		self.scores.clear()
 		query = RapleafInterest.RapleafInterest(query.rstrip())
 		for query_word in query.get_words():
 			query_word = query_word.upper()
 			for interest in self.interests:
+				score = 0
 				for interest_word in interest.get_words():
 					interest_word = interest_word.upper()
-					if ((self.__equality_match(query_word, interest_word)) or
-					(self.__substring_match(query_word, interest_word)) or
-					(self.__levenshtein_match(query_word, interest_word)) or 
-					(self.__wordnet_match(query_word, interest_word))):
-						self.matches.add(interest.get_name())
-		return self.matches
+					score += self.__equality_match(query_word, interest_word)
+					score += self.__substring_match(query_word, interest_word)
+					score += self.__levenshtein_match(query_word, interest_word)
+					score += self.__wordnet_match(query_word, interest_word)
+				if score:
+					self.scores[interest.get_name()] = score
+		return self.scores
